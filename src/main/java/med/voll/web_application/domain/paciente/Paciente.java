@@ -21,7 +21,8 @@ public class Paciente {
     @Deprecated
     public Paciente(){}
 
-    public Paciente(DadosCadastroPaciente dados) {
+    public Paciente(Long id, DadosCadastroPaciente dados) {
+        this.id = id;
         modificarDados(dados);
     }
 
