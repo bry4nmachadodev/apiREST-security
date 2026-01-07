@@ -7,6 +7,7 @@ import med.voll.web_application.domain.medico.Medico;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,8 +15,11 @@ public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    private final PasswordEncoder encriptador;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador) {
         this.usuarioRepository = usuarioRepository;
+        this.encriptador = encriptador;
     }
 
     @Override
@@ -25,7 +29,8 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public void SalvarUsuario(String nome, String email, String senha){
-        usuarioRepository.save(new Usuario(nome, email, senha));
+        String senhaCriptografada = encriptador.encode(senha);
+        usuarioRepository.save(new Usuario(nome, email, senhaCriptografada));
     }
 
 }
