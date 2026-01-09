@@ -40,27 +40,14 @@ public class PacienteController {
     }
 
     @GetMapping
-    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model, @AuthenticationPrincipal Usuario logado) {
-        if(logado.getPerfil() != Perfil.ATENDENTE){
-            return PAGINA_ERRO_403;
-        }
+    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
         var pacientesCadastrados = service.listar(paginacao);
         model.addAttribute("pacientes", pacientesCadastrados);
         return PAGINA_LISTAGEM;
     }
 
     @GetMapping("formulario")
-    public String carregarPaginaCadastro(Long id, Model model, @AuthenticationPrincipal Usuario logado) {
-
-        if (logado.getPerfil() == Perfil.MEDICO) {
-            return PAGINA_ERRO_403;
-        }
-
-        if (id != null &&
-                logado.getPerfil() == Perfil.PACIENTE &&
-                !logado.getId().equals(id)) {
-            return PAGINA_ERRO_403;
-        }
+    public String carregarPaginaCadastro(Long id, Model model) {
         if (id != null) {
             model.addAttribute("dados", service.carregarPorId(id));
         } else {
@@ -70,13 +57,8 @@ public class PacienteController {
         return PAGINA_CADASTRO;
     }
 
-
-    //somente paciente pode cadastrar e atendente
     @PostMapping
-    public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroPaciente dados, BindingResult result, Model model, @AuthenticationPrincipal Usuario logado) {
-        if(logado.getPerfil() == Perfil.MEDICO) {
-            return PAGINA_ERRO_403;
-        }
+    public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroPaciente dados, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("dados", dados);
             return PAGINA_CADASTRO;
