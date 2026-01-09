@@ -40,7 +40,10 @@ public class PacienteController {
     }
 
     @GetMapping
-    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
+    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model, @AuthenticationPrincipal Usuario logado) {
+        if(logado.getPerfil() != Perfil.ATENDENTE){
+            return PAGINA_ERRO_403;
+        }
         var pacientesCadastrados = service.listar(paginacao);
         model.addAttribute("pacientes", pacientesCadastrados);
         return PAGINA_LISTAGEM;
