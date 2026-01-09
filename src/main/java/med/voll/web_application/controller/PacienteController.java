@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.paciente.DadosCadastroPaciente;
 import med.voll.web_application.domain.paciente.PacienteService;
+import med.voll.web_application.domain.usuario.Perfil;
+import med.voll.web_application.domain.usuario.Usuario;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PacienteController {
 
     private static final String PAGINA_LISTAGEM = "paciente/listagem-pacientes";
+
+    //erro -> 500 (erro interntet)
+    private static final String PAGINA_ERRO = "erro/500";
+
+    //erro -> 403 (não autorizado)
+    private static final String PAGINA_ERRO_403 = "erro/403";
+
     private static final String PAGINA_CADASTRO = "paciente/formulario-paciente";
     private static final String REDIRECT_LISTAGEM = "redirect:/pacientes?sucesso";
 
@@ -65,7 +75,11 @@ public class PacienteController {
     }
 
     @DeleteMapping
-    public String excluir(Long id) {
+    public String excluir(Long id, @AuthenticationPrincipal Usuario logado) {
+        if (logado.getPerfil() == Perfil.PACIENTE &&
+                !logado.getId().equals(id)) {
+            throw new RegraDeNegocioException("Você não pode excluir outro paciente");
+        }
         service.excluir(id);
         return REDIRECT_LISTAGEM;
     }
