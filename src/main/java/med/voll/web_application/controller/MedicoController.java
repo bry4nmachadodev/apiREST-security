@@ -24,7 +24,12 @@ public class MedicoController {
 
     private static final String PAGINA_LISTAGEM = "medico/listagem-medicos";
     private static final String PAGINA_CADASTRO = "medico/formulario-medico";
+
+    //erro -> 500 (erro interntet)
     private static final String PAGINA_ERRO = "erro/500";
+
+    //erro -> 403 (não autorizado)
+    private static final String PAGINA_ERRO_403 = "erro/403";
     private static final String REDIRECT_LISTAGEM = "redirect:/medicos?sucesso";
 
     private final MedicoService service;
@@ -41,7 +46,7 @@ public class MedicoController {
     @GetMapping
     public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model, @AuthenticationPrincipal Usuario logado) {
         if (logado.getPerfil() == Perfil.MEDICO) {
-            return PAGINA_ERRO;
+            return PAGINA_ERRO_403;
         }
         var medicosCadastrados = service.listar(paginacao);
         model.addAttribute("medicos", medicosCadastrados);
@@ -49,7 +54,10 @@ public class MedicoController {
     }
 
     @GetMapping("formulario")
-    public String carregarPaginaCadastro(Long id, Model model) {
+    public String carregarPaginaCadastro(Long id, Model model, @AuthenticationPrincipal Usuario logado) {
+        if (logado.getPerfil() != Perfil.ATENDENTE) {
+            return PAGINA_ERRO_403;
+        }
         if (id != null) {
             model.addAttribute("dados", service.carregarPorId(id));
         } else {
@@ -61,8 +69,8 @@ public class MedicoController {
 
     @PostMapping
     public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroMedico dados, BindingResult result, Model model, @AuthenticationPrincipal Usuario logado) {
-        if (logado.getPerfil() == Perfil.MEDICO) {
-            return PAGINA_ERRO;
+        if (logado.getPerfil() != Perfil.ATENDENTE) {
+            return PAGINA_ERRO_403;
         }
         if (result.hasErrors()) {
             model.addAttribute("dados", dados);
@@ -80,7 +88,10 @@ public class MedicoController {
     }
 
     @DeleteMapping
-    public String excluir(Long id) {
+    public String excluir(Long id, @AuthenticationPrincipal Usuario logado) {
+        if (logado.getPerfil() != Perfil.ATENDENTE) {
+            return PAGINA_ERRO_403;
+        }
         service.excluir(id);
         return REDIRECT_LISTAGEM;
     }
