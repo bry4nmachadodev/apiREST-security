@@ -1,10 +1,6 @@
 package med.voll.web_application.domain.usuario;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,6 +16,10 @@ public class Usuario implements UserDetails {
     private String nome;
     private String email;
     private String senha;
+
+    //seja salvo e identificado com string
+    @Enumerated(EnumType.STRING)
+    private Perfil perfil;
 
     public Usuario() {
     }
