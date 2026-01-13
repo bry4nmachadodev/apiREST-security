@@ -2,11 +2,9 @@ package med.voll.web_application.controller;
 
 import jakarta.validation.Valid;
 import med.voll.web_application.domain.RegraDeNegocioException;
-import med.voll.web_application.domain.medico.DadosCadastroMedico;
-import med.voll.web_application.domain.usuario.DadosAltercaoSenha;
+import med.voll.web_application.domain.usuario.DadosAlteracaoSenha;
 import med.voll.web_application.domain.usuario.Usuario;
 import med.voll.web_application.domain.usuario.UsuarioService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +34,7 @@ public class LoginController {
         return FORMULARIO_ALTERACAO_SENHA;
     }
     @PostMapping("/alterar-senha")
-    public String alterarSenha(@Valid @ModelAttribute("dados") DadosAltercaoSenha dados, BindingResult result, Model model, @AuthenticationPrincipal Usuario logado) {
+    public String alterarSenha(@Valid @ModelAttribute("dados") DadosAlteracaoSenha dados, BindingResult result, Model model, @AuthenticationPrincipal Usuario logado) {
         if (result.hasErrors()) {
             model.addAttribute("dados", dados);
             return FORMULARIO_ALTERACAO_SENHA;

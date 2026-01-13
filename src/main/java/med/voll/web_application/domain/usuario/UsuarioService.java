@@ -27,7 +27,7 @@ public class UsuarioService implements UserDetailsService {
 
     public Long salvarUsuario(String nome, String email, String senha, Perfil perfil){
         String senhaCriptografada = encriptador.encode(senha);
-        Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
+        Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil, false));
         return usuario.getId();
     }
 
@@ -35,18 +35,21 @@ public class UsuarioService implements UserDetailsService {
         usuarioRepository.deleteById(id);
     }
 
-    public void alterarSenha(DadosAltercaoSenha dadosAltercaoSenha, Usuario logado){
-        if(!encriptador.matches(dadosAltercaoSenha.senhaAtual(), logado.getPassword())){
-            throw new RegraDeNegocioException("Senha digitada não confere com a senha atual!");
+    public void alterarSenha(DadosAlteracaoSenha dados, Usuario logado){
+        if(!encriptador.matches(dados.senhaAtual(), logado.getPassword())){
+            throw new RegraDeNegocioException("Senha digitada não confere com senha atual!");
         }
 
-        if (!dadosAltercaoSenha.novaSenha().equals(dadosAltercaoSenha.novaSenhaConfirmacao())){
-            throw new RegraDeNegocioException("Senha digitada não confere com a senha da confirmação!");
+        if(!dados.novaSenha().equals(dados.novaSenhaConfirmacao())){
+            throw new RegraDeNegocioException("Senha e confirmação não conferem!");
         }
 
-        String senhaCriptografada = encriptador.encode(dadosAltercaoSenha.novaSenha());
+        String senhaCriptografada = encriptador.encode(dados.novaSenha());
         logado.alterarSenha(senhaCriptografada);
+
+        logado.setSenhaAlterada(true);
 
         usuarioRepository.save(logado);
     }
+
 }

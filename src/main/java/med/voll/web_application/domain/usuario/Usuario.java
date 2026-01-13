@@ -18,6 +18,7 @@ public class Usuario implements UserDetails {
     private String nome;
     private String email;
     private String senha;
+    private Boolean senhaAlterada;
 
     //seja salvo e identificado com string
     @Enumerated(EnumType.STRING)
@@ -26,11 +27,12 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String senha, Perfil perfil) {
+    public Usuario(String nome, String email, String senha, Perfil perfil, Boolean senhaAlterada) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.perfil = perfil;
+        this.senhaAlterada = false;
     }
 
     @Override
@@ -62,5 +64,13 @@ public class Usuario implements UserDetails {
 
     public void alterarSenha(String senhaCriptografada) {
         this.senha = senhaCriptografada;
+    }
+
+    public Boolean getSenhaAlterada() {
+        return senhaAlterada;
+    }
+
+    public void setSenhaAlterada(Boolean senhaAlterada) {
+        this.senhaAlterada = senhaAlterada;
     }
 }
