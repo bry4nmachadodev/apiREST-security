@@ -1,0 +1,33 @@
+package med.voll.web_application.controller;
+
+import med.voll.web_application.domain.RegraDeNegocioException;
+import med.voll.web_application.domain.usuario.UsuarioService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+public class EsqueciMinhaSenhaController {
+
+    private static final String FORMULARIO_RECUPERACAO_SENHA = "autenticacao/formulario-recuperacao-senha";
+    private UsuarioService usuarioService;
+
+    @GetMapping("esqueci-minha-senha")
+    public String carregarPaginaEsqueciMinhaSenha(){
+        return FORMULARIO_RECUPERACAO_SENHA;
+    }
+
+    @PostMapping("esqueci-minha-senha")
+    public String enviarTokenPorEmail(@ModelAttribute("email") String email, Model model){
+        try {
+            usuarioService.enviarToken(email);
+            return "redirect:esqueci-minha-senha?verificar";
+        } catch (RegraDeNegocioException ex) {
+            model.addAttribute("erro", ex.getMessage());
+            return FORMULARIO_RECUPERACAO_SENHA;
+        }
+    }
+
+}
