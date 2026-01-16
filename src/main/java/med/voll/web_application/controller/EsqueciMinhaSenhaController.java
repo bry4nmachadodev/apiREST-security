@@ -14,6 +14,10 @@ public class EsqueciMinhaSenhaController {
     private static final String FORMULARIO_RECUPERACAO_SENHA = "autenticacao/formulario-recuperacao-senha";
     private UsuarioService usuarioService;
 
+    public EsqueciMinhaSenhaController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
     @GetMapping("esqueci-minha-senha")
     public String carregarPaginaEsqueciMinhaSenha(){
         return FORMULARIO_RECUPERACAO_SENHA;
