@@ -18,6 +18,7 @@ public class EmailService {
     private static final String EMAIL_ORIGEM = "vollmed@email.com";
     private static final String NOME_ENVIADOR = "Clínica Voll Med";
     public static final String URL_SITE = "http://localhost:8080"; //"voll.med.com.br"
+    public static final String URL_SITE_LOGIN = "http://localhost:8080/login";
 
     public EmailService(JavaMailSender enviadorEmail) {
         this.enviadorEmail = enviadorEmail;
@@ -50,6 +51,28 @@ public class EmailService {
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">ALTERAR</a></h3>"
                 + "Obrigado,<br>"
                 + "Clínica Voll Med.", usuario.getNome(), URL_SITE + "/recuperar-conta?codigo=" + usuario.getToken());
+
+        enviarEmail(usuario.getUsername(), assunto, conteudo);
+    }
+
+    public void enviarCredenciaisEmail(String senha, Usuario usuario) {
+        String assunto = "Aqui estão suas credenciais!";
+        String conteudo = gerarConteudoEmail(
+
+                //apresentação
+                "Olá [[name]],<br>"
+                + "Aqui estão suas informações de login<br>"
+                + "Email: " + usuario.getUsername() + "<br>"
+                + "Senha: " + senha + "<br>"
+
+                //url
+                + "Por favor clique no link abaixo para alterar a senha:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">ACESSAR SUA CONTA</a></h3>"
+
+                //despedir
+                + "Conte com a nossa equipe para o que precisar!<br>"
+                + "Obrigado,<br>"
+                + "Clínica Voll Med.", usuario.getNome(), URL_SITE_LOGIN);
 
         enviarEmail(usuario.getUsername(), assunto, conteudo);
     }
