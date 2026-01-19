@@ -86,4 +86,28 @@ public class UsuarioService implements UserDetailsService {
     private void forcarLogout() {
         SecurityContextHolder.clearContext();
     }
+
+    public void recuperarConta(String tokenGerado, DadosRecuperacaoConta dados) {
+        Usuario usuario = usuarioRepository.findByTokenIgnoreCase(tokenGerado).orElseThrow(
+                () -> new RegraDeNegocioException("Link inválido!")
+        );
+
+        if(usuario.getExpiracaoToken().isBefore(LocalDateTime.now())) {
+            throw new RegraDeNegocioException("LINK EXPIRADO");
+        }
+
+        if(!dados.novaSenha().equals(dados.novaSenhaConfirmacao())){
+            throw new RegraDeNegocioException("Senha e confirmação não conferem!");
+        }
+
+        String senhaCriptografada = encriptador.encode(dados.novaSenha());
+        usuario.alterarSenha(senhaCriptografada);
+        usuario.setSenhaAlterada(true);
+
+        //settar token null
+        usuario.setToken(null);
+        usuario.setExpiracaoToken(null);
+
+        usuarioRepository.save(usuario);
+    }
 }
