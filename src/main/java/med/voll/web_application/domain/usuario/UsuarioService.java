@@ -2,6 +2,8 @@ package med.voll.web_application.domain.usuario;
 
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.usuario.email.EmailService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -56,10 +58,11 @@ public class UsuarioService implements UserDetailsService {
 
         String senhaCriptografada = encriptador.encode(dados.novaSenha());
         logado.alterarSenha(senhaCriptografada);
-
         logado.setSenhaAlterada(true);
 
         usuarioRepository.save(logado);
+
+        forcarLogout();
     }
 
     //busca usuário com base no email e manda junto do token
@@ -79,4 +82,8 @@ public class UsuarioService implements UserDetailsService {
         emailService.enviarEmailSenha(usuario);
     }
 
+    //metodo responsável por forçar a pessoa relogar
+    private void forcarLogout() {
+        SecurityContextHolder.clearContext();
+    }
 }
