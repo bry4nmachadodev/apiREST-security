@@ -1,6 +1,7 @@
 package med.voll.web_application.controller;
 
 import med.voll.web_application.domain.RegraDeNegocioException;
+import med.voll.web_application.domain.usuario.DadosRecuperacaoConta;
 import med.voll.web_application.domain.usuario.UsuarioService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EsqueciMinhaSenhaController {
 
     private static final String FORMULARIO_RECUPERACAO_SENHA = "autenticacao/formulario-recuperacao-senha";
+    private static final String FORMULARIO_RECUPERACAO_CONTA = "autenticacao/formulario-recuperacao-conta";
     private UsuarioService usuarioService;
 
     public EsqueciMinhaSenhaController(UsuarioService usuarioService) {
@@ -45,7 +47,7 @@ public class EsqueciMinhaSenhaController {
     @PostMapping("/recuperar-conta")
     public String carregarPaginaAlterarSenhaEsquecida(@RequestParam(name = "codigo") String codigo, Model model, DadosRecuperacaoConta dados) {
         try {
-            service.recuperarConta(codigo, dados);
+            usuarioService.recuperarConta(codigo, dados);
             return "redirect:login";
         } catch (RegraDeNegocioException e){
             model.addAttribute("error", e.getMessage());
