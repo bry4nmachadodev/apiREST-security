@@ -7,4 +7,3 @@ public record DadosRecuperacaoConta(
         @NotBlank String novaSenhaConfirmacao) {
 
 }
-1
