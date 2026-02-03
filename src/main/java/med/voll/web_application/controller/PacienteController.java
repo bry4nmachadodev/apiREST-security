@@ -32,7 +32,6 @@ public class PacienteController {
 
     private static final String PAGINA_CADASTRO = "paciente/formulario-paciente";
     private static final String REDIRECT_LISTAGEM = "redirect:/pacientes?sucesso";
-
     private static final String PAGINA_CADASTRO_DESLOGADO = "paciente/registrar-paciente";
 
     private final PacienteService pacienteService;

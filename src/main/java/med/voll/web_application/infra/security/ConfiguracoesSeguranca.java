@@ -26,8 +26,14 @@ public class ConfiguracoesSeguranca {
     public SecurityFilterChain filtrosSeguranca(HttpSecurity http, OncePerRequestFilter filtroAlteracaoSenha) throws Exception {
         return http
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/css/**", "/js/**", "/assets/**",
-                            "/", "/index", "/home", "/esqueci-minha-senha", "/recuperar-conta/**", "/registrar/**", "/confirmar-email/**").permitAll();
+                    req.requestMatchers(
+                            "/css/**", "/js/**", "/assets/**",
+                            "/", "/index", "/home",
+                            "/esqueci-minha-senha",
+                            "/recuperar-conta/**",
+                            "/pacientes/registrar",
+                            "/pacientes/confirmar-email"
+                    ).permitAll();
 //                        req.requestMatchers("/pacientes/**").hasRole("ATENDENTE");
 //                        req.requestMatchers(HttpMethod.GET, "/medicos").hasAnyRole("ATENDENTE", "PACIENTE");
 //                        req.requestMatchers("/medicos/**").hasRole("ATENDENTE");
