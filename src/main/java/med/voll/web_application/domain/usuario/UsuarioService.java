@@ -65,6 +65,10 @@ public class UsuarioService implements UserDetailsService {
             throw new RegraDeNegocioException("Senha e confirmação não conferem!");
         }
 
+        if(encriptador.matches(dados.novaSenha(), logado.getPassword())){
+            throw new RegraDeNegocioException("A nova senha deve ser diferente da atual!");
+        }
+
         String senhaCriptografada = encriptador.encode(dados.novaSenha());
         logado.alterarSenha(senhaCriptografada);
         logado.setSenhaAlterada(true);
