@@ -82,7 +82,8 @@ public class EmailService {
     public void enviarEmailConfirmacao(@NotBlank @Email String email, String token) {
         String assunto = "Confirme sua conta - Voll Med";
 
-        String urlConfirmacao = URL_SITE + "/confirmar-email?token=" + token;
+        String urlConfirmacao = "http://localhost:8080/pacientes/confirmar-email?token=" + token;
+
 
         String conteudo =
                 "Olá,<br><br>"

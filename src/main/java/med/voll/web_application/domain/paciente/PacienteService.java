@@ -18,9 +18,10 @@ public class PacienteService {
     private final UsuarioService usuarioService;
     private EmailService emailService;
 
-    public PacienteService(PacienteRepository repository, UsuarioService usuarioService) {
+    public PacienteService(PacienteRepository repository, UsuarioService usuarioService, EmailService emailService) {
         this.repository = repository;
         this.usuarioService = usuarioService;
+        this.emailService = emailService;
     }
 
     public Page<DadosListagemPaciente> listar(Pageable paginacao) {

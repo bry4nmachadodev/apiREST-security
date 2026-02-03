@@ -23,35 +23,66 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class ConfiguracoesSeguranca {
 
     @Bean
-    public SecurityFilterChain filtrosSeguranca(HttpSecurity http, OncePerRequestFilter filtroAlteracaoSenha) throws Exception {
+    public SecurityFilterChain filtrosSeguranca(
+            HttpSecurity http,
+            OncePerRequestFilter filtroAlteracaoSenha
+    ) throws Exception {
+
         return http
-                .authorizeHttpRequests(req -> {
-                    req.requestMatchers(
-                            "/css/**", "/js/**", "/assets/**",
-                            "/", "/index", "/home",
-                            "/esqueci-minha-senha",
-                            "/recuperar-conta/**",
-                            "/pacientes/registrar",
-                            "/pacientes/confirmar-email"
-                    ).permitAll();
-//                        req.requestMatchers("/pacientes/**").hasRole("ATENDENTE");
-//                        req.requestMatchers(HttpMethod.GET, "/medicos").hasAnyRole("ATENDENTE", "PACIENTE");
-//                        req.requestMatchers("/medicos/**").hasRole("ATENDENTE");
-//                        req.requestMatchers(HttpMethod.POST, "/consultas/**").hasAnyRole("ATENDENTE", "PACIENTE");
-//                        req.requestMatchers(HttpMethod.PUT, "/consultas/**").hasAnyRole("ATENDENTE", "PACIENTE");
-                    req.anyRequest().authenticated();
-                })
-                .addFilterBefore(filtroAlteracaoSenha, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(form -> form.loginPage("/login")
-                        .defaultSuccessUrl("/")
-                        .permitAll())
+                .authorizeHttpRequests(req -> req
+                        // arquivos estáticos
+                        .requestMatchers(
+                                "/css/**", "/js/**", "/assets/**"
+                        ).permitAll()
+
+                        // páginas públicas
+                        .requestMatchers(
+                                "/", "/index", "/home",
+                                "/login",
+                                "/esqueci-minha-senha",
+                                "/recuperar-conta/**"
+                        ).permitAll()
+
+                        // 🔥 REGISTRO DE PACIENTE (GET + POST)
+                        .requestMatchers(HttpMethod.GET, "/pacientes/registrar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/pacientes/registrar").permitAll()
+
+                        // confirmação por token
+                        .requestMatchers("/pacientes/confirmar-email/**").permitAll()
+
+                        // resto protegido
+                        .anyRequest().authenticated()
+                )
+
+                .addFilterBefore(
+                        filtroAlteracaoSenha,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
-                        .permitAll())
-                .rememberMe(rememberMe -> rememberMe.key("lembrarDeMim")
+                        .permitAll()
+                )
+
+                .rememberMe(rememberMe -> rememberMe
+                        .key("lembrarDeMim")
                         .alwaysRemember(true)
                 )
-                .csrf(Customizer.withDefaults())
+
+                // 🔥 CSRF ignorado apenas onde precisa
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(
+                                "/pacientes/registrar",
+                                "/pacientes/confirmar-email/**"
+                        )
+                )
+
                 .build();
     }
 
