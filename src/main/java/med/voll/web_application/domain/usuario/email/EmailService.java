@@ -2,6 +2,8 @@ package med.voll.web_application.domain.usuario.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.usuario.Usuario;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -75,5 +77,23 @@ public class EmailService {
                 + "Clínica Voll Med.", usuario.getNome(), URL_SITE_LOGIN);
 
         enviarEmail(usuario.getUsername(), assunto, conteudo);
+    }
+
+    public void enviarEmailConfirmacao(@NotBlank @Email String email, String token) {
+        String assunto = "Confirme sua conta - Voll Med";
+
+        String urlConfirmacao = URL_SITE + "/confirmar-email?token=" + token;
+
+        String conteudo =
+                "Olá,<br><br>"
+                        + "Obrigado por se cadastrar na Clínica Voll Med!<br><br>"
+                        + "Para ativar sua conta, clique no link abaixo:<br>"
+                        + "<h3><a href=\"" + urlConfirmacao + "\" target=\"_self\">CONFIRMAR MINHA CONTA</a></h3>"
+                        + "<br>"
+                        + "Se você não se cadastrou, ignore este email.<br><br>"
+                        + "Obrigado,<br>"
+                        + "Equipe Voll Med.";
+
+        enviarEmail(email, assunto, conteudo);
     }
 }
