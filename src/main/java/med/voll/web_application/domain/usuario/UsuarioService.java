@@ -2,7 +2,6 @@ package med.voll.web_application.domain.usuario;
 
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.usuario.email.EmailService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,6 +39,15 @@ public class UsuarioService implements UserDetailsService {
         String senhaCriptografada = encriptador.encode(primeiraSenha);
         var usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil, false));
         emailService.enviarCredenciaisEmail(primeiraSenha, usuario);
+        return usuario.getId();
+    }
+
+    public Long salvarUsuarioDeslogado(String nome, String email, String senha, Perfil perfil, String tokenConfirmacao) {
+        String senhaCriptografada = encriptador.encode(senha);
+        var usuario = new Usuario(nome, email, senhaCriptografada, perfil, false);
+        usuario.setAtivado(false);
+        usuario.setToken(tokenConfirmacao);
+        usuarioRepository.save(usuario);
         return usuario.getId();
     }
 
