@@ -3,11 +3,12 @@ package med.voll.web_application.domain.paciente;
 import jakarta.transaction.Transactional;
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.usuario.Perfil;
-import med.voll.web_application.domain.usuario.Usuario;
 import med.voll.web_application.domain.usuario.UsuarioService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class PacienteService {
@@ -37,6 +38,22 @@ public class PacienteService {
             var paciente = repository.findById(dados.id()).orElseThrow();
             paciente.modificarDados(dados);
         }
+    }
+
+    //cadastrar para paciente deslogado
+    @Transactional
+    public void cadastrarDeslogado(DadosCadastroPacienteDeslogado dados) {
+        if (repository.isJaCadastrado(dados.email(), dados.cpf(), dados.id())) {
+            throw new RegraDeNegocioException("E-mail ou CPF já cadastrado para outro paciente!");
+        }
+
+        String token = UUID.randomUUID().toString();
+        var usuarioId = usuarioService.salvarUsuarioDeslogado(dados.nome(), dados.email(), dados.senha(), Perfil.PACIENTE, token);
+        repository.save(new Paciente(usuarioId, dados));
+
+        //agora settar como ativo - salvou como ativo = false
+
+
     }
 
     public DadosCadastroPaciente carregarPorId(Long id) {
