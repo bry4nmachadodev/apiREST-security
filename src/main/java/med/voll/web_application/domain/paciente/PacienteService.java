@@ -62,6 +62,7 @@ public class PacienteService {
         return new DadosCadastroPaciente(paciente.getId(), paciente.getNome(), paciente.getEmail(), paciente.getTelefone(), paciente.getCpf());
     }
 
+
     //apagar de USUARIOS e do BANCO DE DADOS
     @Transactional
     public void excluir(Long id) {

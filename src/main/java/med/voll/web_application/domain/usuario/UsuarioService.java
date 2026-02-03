@@ -1,5 +1,6 @@
 package med.voll.web_application.domain.usuario;
 
+import jakarta.transaction.Transactional;
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.usuario.email.EmailService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -115,6 +116,17 @@ public class UsuarioService implements UserDetailsService {
         //settar token null
         usuario.setToken(null);
         usuario.setExpiracaoToken(null);
+
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void confirmarConta(String token) {
+        Usuario usuario = usuarioRepository.findByTokenIgnoreCase(token)
+                .orElseThrow(() -> new RegraDeNegocioException("Link inválido ou expirado!"));
+
+        usuario.setAtivado(true);
+        usuario.setToken(null);  // limpa o token
 
         usuarioRepository.save(usuario);
     }
