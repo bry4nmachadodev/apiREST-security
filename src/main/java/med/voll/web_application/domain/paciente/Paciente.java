@@ -31,6 +31,19 @@ public class Paciente {
         this.telefone = dados.telefone();
         this.cpf = dados.cpf();
     }
+
+    public Paciente(Long id, DadosCadastroPacienteDeslogado dados) {
+        this.id = id;
+        modificarDados(dados);
+    }
+
+    public void modificarDados(DadosCadastroPacienteDeslogado dados) {
+        this.nome = dados.nome();
+        this.email = dados.email();
+        this.telefone = dados.telefone();
+        this.cpf = dados.cpf();
+        // ignora a senha aqui, ela vai pra tabela usuarios
+    }
     public Long getId() {
         return id;
     }
