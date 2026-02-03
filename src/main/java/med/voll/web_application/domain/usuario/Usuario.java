@@ -99,4 +99,12 @@ public class Usuario implements UserDetails {
     public void setSenhaAlterada(Boolean senhaAlterada) {
         this.senhaAlterada = senhaAlterada;
     }
+
+    public boolean isAtivado() {
+        return ativado;
+    }
+
+    public void setAtivado(boolean ativado) {
+        this.ativado = ativado;
+    }
 }
