@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.usuario.Perfil;
 import med.voll.web_application.domain.usuario.UsuarioService;
+import med.voll.web_application.domain.usuario.email.EmailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ public class PacienteService {
 
     private final PacienteRepository repository;
     private final UsuarioService usuarioService;
+    private EmailService emailService;
 
     public PacienteService(PacienteRepository repository, UsuarioService usuarioService) {
         this.repository = repository;
@@ -52,8 +54,7 @@ public class PacienteService {
         repository.save(new Paciente(usuarioId, dados));
 
         //agora settar como ativo - salvou como ativo = false
-
-
+        emailService.enviarEmailConfirmacao(dados.email(), token);
     }
 
     public DadosCadastroPaciente carregarPorId(Long id) {
