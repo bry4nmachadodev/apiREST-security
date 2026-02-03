@@ -24,6 +24,9 @@ public class Usuario implements UserDetails {
     private String token;
     private LocalDateTime expiracaoToken;
 
+    //relacionado ao paciente DESLOGADO
+    private boolean ativado = false;
+
     private Boolean senhaAlterada;
 
     //seja salvo e identificado com string
